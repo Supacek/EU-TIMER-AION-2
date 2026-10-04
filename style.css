@@ -6,18 +6,31 @@
     box-sizing: border-box;
 }
 
+
 html,
 body {
+
     margin: 0;
+
     width: 100%;
     height: 100%;
+
     overflow: hidden;
+
 }
 
+
 body {
+
     background: #08080d;
+
     color: #d8d5cf;
-    font-family: Arial, Helvetica, sans-serif;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
 }
 
 
@@ -26,20 +39,25 @@ body {
    ========================================= */
 
 #app {
+
     width: 100%;
     height: 100%;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
     background:
+
         radial-gradient(
             circle at 50% 15%,
             rgba(180, 135, 55, 0.08),
             transparent 45%
         ),
+
         #08080d;
+
 }
 
 
@@ -48,28 +66,43 @@ body {
    ========================================= */
 
 .card {
+
     width: 100%;
+
     max-width: 430px;
 
-    min-height: 430px;
+    min-height: 448px;
 
-    padding: 28px 26px 24px;
+    padding:
+        28px
+        26px
+        24px;
 
     display: flex;
+
     flex-direction: column;
+
     align-items: center;
 
     text-align: center;
 
-    background: rgba(10, 10, 16, 0.97);
+    background:
+        rgba(10, 10, 16, 0.97);
 
-    border: 1px solid rgba(150, 112, 50, 0.55);
+    border:
+        1px solid
+        rgba(150, 112, 50, 0.55);
 
     border-radius: 9px;
 
     box-shadow:
-        0 16px 50px rgba(0, 0, 0, 0.45),
-        inset 0 1px 0 rgba(255, 255, 255, 0.02);
+
+        0 16px 50px
+        rgba(0, 0, 0, 0.45),
+
+        inset 0 1px 0
+        rgba(255, 255, 255, 0.02);
+
 }
 
 
@@ -78,6 +111,7 @@ body {
    ========================================= */
 
 .eyebrow {
+
     display: inline-flex;
 
     align-items: center;
@@ -85,11 +119,14 @@ body {
 
     gap: 9px;
 
-    padding: 7px 15px;
+    padding:
+        7px
+        15px;
 
     border-radius: 999px;
 
     background:
+
         linear-gradient(
             180deg,
             rgba(194, 148, 72, 0.18),
@@ -99,17 +136,20 @@ body {
     color: #b9a77f;
 
     font-size: 12px;
+
     font-weight: 600;
 
     letter-spacing: 2px;
 
     text-transform: uppercase;
+
 }
 
 
 /* Zlatá tečka */
 
 .eyebrow::before {
+
     content: "";
 
     width: 8px;
@@ -122,7 +162,9 @@ body {
     background: #dfb45c;
 
     box-shadow:
-        0 0 10px rgba(223, 180, 92, 0.65);
+        0 0 10px
+        rgba(223, 180, 92, 0.65);
+
 }
 
 
@@ -131,7 +173,9 @@ body {
    ========================================= */
 
 .timer {
+
     margin-top: 24px;
+
     margin-bottom: 10px;
 
     color: #f2d37f;
@@ -141,7 +185,8 @@ body {
         "Times New Roman",
         serif;
 
-    font-size: clamp(48px, 11vw, 72px);
+    font-size:
+        clamp(48px, 11vw, 72px);
 
     font-weight: 700;
 
@@ -149,10 +194,14 @@ body {
 
     letter-spacing: 1px;
 
-    font-variant-numeric: tabular-nums;
+    font-variant-numeric:
+        tabular-nums;
 
     text-shadow:
-        0 0 18px rgba(219, 174, 79, 0.20);
+
+        0 0 18px
+        rgba(219, 174, 79, 0.20);
+
 }
 
 
@@ -161,17 +210,22 @@ body {
    ========================================= */
 
 .open {
+
     color: #7f8495;
 
     font-size: 14px;
 
     font-weight: 500;
+
 }
 
+
 .open strong {
+
     color: #ddd5c4;
 
     font-weight: 600;
+
 }
 
 
@@ -180,6 +234,7 @@ body {
    ========================================= */
 
 .popup-button {
+
     display: inline-flex;
 
     align-items: center;
@@ -191,15 +246,20 @@ body {
 
     min-height: 38px;
 
-    padding: 9px 17px;
+    padding:
+        9px
+        17px;
 
-    border: 1px solid rgba(194, 148, 72, 0.65);
+    border:
+        1px solid
+        rgba(194, 148, 72, 0.65);
 
     border-radius: 999px;
 
     outline: none;
 
     background:
+
         linear-gradient(
             180deg,
             rgba(194, 148, 72, 0.13),
@@ -226,48 +286,61 @@ body {
     cursor: pointer;
 
     box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.025),
-        0 2px 8px rgba(0, 0, 0, 0.15);
+
+        inset 0 1px 0
+        rgba(255, 255, 255, 0.025),
+
+        0 2px 8px
+        rgba(0, 0, 0, 0.15);
 
     transition:
+
         background 0.18s ease,
         border-color 0.18s ease,
         color 0.18s ease,
         box-shadow 0.18s ease,
         transform 0.12s ease;
+
 }
 
-
-/* Hover */
 
 .popup-button:hover {
 
     background:
+
         linear-gradient(
             180deg,
             rgba(194, 148, 72, 0.22),
             rgba(194, 148, 72, 0.11)
         );
 
-    border-color: rgba(216, 180, 92, 0.85);
+    border-color:
+        rgba(216, 180, 92, 0.85);
 
     color: #f2d37f;
 
     box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.035),
-        0 4px 14px rgba(0, 0, 0, 0.25);
 
-    transform: translateY(-1px);
+        inset 0 1px 0
+        rgba(255, 255, 255, 0.035),
+
+        0 4px 14px
+        rgba(0, 0, 0, 0.25);
+
+    transform:
+        translateY(-1px);
+
 }
 
 
-/* Kliknutí */
-
 .popup-button:active {
-    transform: translateY(0);
+
+    transform:
+        translateY(0);
 
     background:
         rgba(194, 148, 72, 0.18);
+
 }
 
 
@@ -276,11 +349,13 @@ body {
    ========================================= */
 
 .schedule {
+
     width: 100%;
 
     margin-top: 24px;
 
     text-align: left;
+
 }
 
 
@@ -298,7 +373,7 @@ body {
 
     gap: 8px;
 
-    margin-bottom: 11px;
+    margin-bottom: 12px;
 
     color: #d8d1c1;
 
@@ -316,19 +391,23 @@ body {
 }
 
 
-/* Malý EU štítek */
+/* =========================================
+   EU ŠTÍTEK
+   ========================================= */
 
 .schedule-badge {
 
     display: inline-flex;
 
     align-items: center;
-
     justify-content: center;
 
-    padding: 3px 8px;
+    padding:
+        3px
+        8px;
 
-    border: 1px solid
+    border:
+        1px solid
         rgba(72, 190, 190, 0.45);
 
     border-radius: 999px;
@@ -338,7 +417,10 @@ body {
 
     color: #6cc4c4;
 
-    font-family: Arial, Helvetica, sans-serif;
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
 
     font-size: 9px;
 
@@ -350,7 +432,7 @@ body {
 
 
 /* =========================================
-   ROZVRH - MŘÍŽKA
+   ROZVRH - 4 × 2
    ========================================= */
 
 .rift-schedule {
@@ -360,9 +442,12 @@ body {
     display: grid;
 
     grid-template-columns:
-        repeat(4, 1fr);
+        repeat(4, minmax(0, 1fr));
 
-    gap: 8px;
+    grid-template-rows:
+        repeat(2, 52px);
+
+    gap: 10px;
 
 }
 
@@ -373,7 +458,9 @@ body {
 
 .rift-time {
 
-    height: 42px;
+    width: 100%;
+
+    height: 52px;
 
     display: flex;
 
@@ -381,15 +468,22 @@ body {
 
     justify-content: center;
 
-    border: 1px solid
-        rgba(48, 62, 88, 0.65);
+    border:
+        1px solid
+        rgba(48, 62, 88, 0.75);
 
-    border-radius: 12px;
+    border-radius: 13px;
 
     background:
+
         rgba(7, 10, 20, 0.72);
 
-    color: #737b8d;
+    color: #697386;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
 
     font-size: 13px;
 
@@ -398,11 +492,15 @@ body {
     font-variant-numeric:
         tabular-nums;
 
+    text-decoration: none;
+
     transition:
+
         background 0.2s ease,
         border-color 0.2s ease,
         color 0.2s ease,
         box-shadow 0.2s ease;
+
 }
 
 
@@ -418,9 +516,11 @@ body {
         rgba(38, 49, 70, 0.55);
 
     background:
-        rgba(5, 7, 14, 0.55);
 
-    text-decoration: line-through;
+        rgba(5, 7, 14, 0.50);
+
+    text-decoration:
+        line-through;
 
 }
 
@@ -432,6 +532,12 @@ body {
 .rift-time.future {
 
     color: #697386;
+
+    border-color:
+        rgba(48, 62, 88, 0.75);
+
+    background:
+        rgba(7, 10, 20, 0.72);
 
 }
 
@@ -445,22 +551,28 @@ body {
     color: #eee1c7;
 
     border-color:
-        rgba(194, 148, 72, 0.75);
+        rgba(194, 148, 72, 0.80);
 
     background:
+
         linear-gradient(
             180deg,
-            rgba(194, 148, 72, 0.18),
-            rgba(194, 148, 72, 0.09)
+            rgba(194, 148, 72, 0.20),
+            rgba(194, 148, 72, 0.10)
         );
 
     box-shadow:
+
         inset 0 1px 0
         rgba(255, 255, 255, 0.025),
+
         0 0 14px
-        rgba(194, 148, 72, 0.08);
+        rgba(194, 148, 72, 0.10);
 
     font-weight: 700;
+
+    text-decoration:
+        none;
 
 }
 
@@ -479,6 +591,7 @@ body {
 
 }
 
+
 .source b {
 
     color: #a39b89;
@@ -495,10 +608,15 @@ body {
 @media (max-width: 430px) {
 
     #app {
+
         align-items: stretch;
+
     }
 
+
     .card {
+
+        width: 100%;
 
         max-width: none;
 
@@ -508,20 +626,51 @@ body {
 
         border-radius: 0;
 
-        padding: 24px 18px;
+        padding:
+            24px
+            18px;
 
     }
+
 
     .timer {
+
         font-size: 64px;
+
     }
+
 
     .popup-button {
+
         margin-top: 16px;
+
     }
 
+
     .schedule {
+
         margin-top: 20px;
+
+    }
+
+
+    .rift-schedule {
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        grid-template-rows:
+            repeat(4, 46px);
+
+        gap: 8px;
+
+    }
+
+
+    .rift-time {
+
+        height: 46px;
+
     }
 
 }
@@ -537,9 +686,12 @@ body {
 
         min-height: auto;
 
-        padding: 18px 20px;
+        padding:
+            18px
+            20px;
 
     }
+
 
     .timer {
 
@@ -549,11 +701,13 @@ body {
 
     }
 
+
     .popup-button {
 
         margin-top: 12px;
 
     }
+
 
     .schedule {
 
@@ -561,13 +715,25 @@ body {
 
     }
 
+
+    .rift-schedule {
+
+        grid-template-rows:
+            repeat(2, 40px);
+
+        gap: 7px;
+
+    }
+
+
     .rift-time {
 
-        height: 36px;
+        height: 40px;
 
         font-size: 12px;
 
     }
+
 
     .source {
 
