@@ -1,48 +1,26 @@
-// AION 2 EU - Spacetime Rift Timer
+// AION 2 EU - Časovač časoprostorových Riftů
 
 const RIFT_HOURS = [2, 5, 8, 11, 14, 17, 20, 23];
 
 
 // =========================================
-// EUROPE / PRAGUE TIME
+// AKTUÁLNÍ ČESKÝ ČAS
 // =========================================
 
 function getEUTime() {
 
     const now = new Date();
 
-    const formatter = new Intl.DateTimeFormat("en-GB", {
-        timeZone: "Europe/Prague",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hourCycle: "h23"
-    });
-
-    const parts = formatter.formatToParts(now);
-
-    const hour = Number(
-        parts.find(part => part.type === "hour").value
-    );
-
-    const minute = Number(
-        parts.find(part => part.type === "minute").value
-    );
-
-    const second = Number(
-        parts.find(part => part.type === "second").value
-    );
-
     return {
-        hour,
-        minute,
-        second
+        hour: now.getHours(),
+        minute: now.getMinutes(),
+        second: now.getSeconds()
     };
 }
 
 
 // =========================================
-// FORMAT ČASU
+// FORMÁTOVÁNÍ ČASU
 // =========================================
 
 function pad(number) {
@@ -64,6 +42,7 @@ function getNextRift() {
         now.second;
 
 
+    // Hledáme nejbližší Rift
     for (const hour of RIFT_HOURS) {
 
         const riftSeconds = hour * 3600;
@@ -79,8 +58,8 @@ function getNextRift() {
     }
 
 
-    // Poslední Rift dne už proběhl.
-    // Počítáme do prvního Riftu dalšího dne.
+    // Pokud už poslední Rift dne proběhl,
+    // počítáme do prvního Riftu následujícího dne.
 
     return {
         remaining:
@@ -94,7 +73,7 @@ function getNextRift() {
 
 
 // =========================================
-// AKTUALIZACE TIMERU
+// AKTUALIZACE ČASOVAČE
 // =========================================
 
 function updateTimer() {
@@ -120,9 +99,13 @@ function updateTimer() {
         rift.remaining % 60;
 
 
+    // Odpočet do dalšího Riftu
+
     timer.textContent =
         `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
 
+
+    // Čas dalšího Riftu
 
     if (nextTime) {
 
@@ -134,7 +117,7 @@ function updateTimer() {
 
 
 // =========================================
-// SPUŠTĚNÍ
+// SPUŠTĚNÍ ČASOVAČE
 // =========================================
 
 updateTimer();
