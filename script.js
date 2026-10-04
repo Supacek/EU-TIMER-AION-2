@@ -1,4 +1,6 @@
-// AION 2 EU - Časovač časoprostorových Riftů
+// =========================================
+// AION 2 EU - ČASOVAČ ČASOPROSTOROVÝCH RIFTŮ
+// =========================================
 
 const RIFT_HOURS = [2, 5, 8, 11, 14, 17, 20, 23];
 
@@ -29,46 +31,66 @@ function pad(number) {
 
 
 // =========================================
+// AKTUÁLNÍ ČAS V SEKUNDÁCH
+// =========================================
+
+function getCurrentSeconds() {
+
+    const now = getEUTime();
+
+    return (
+        now.hour * 3600 +
+        now.minute * 60 +
+        now.second
+    );
+}
+
+
+// =========================================
 // NAJÍT DALŠÍ RIFT
 // =========================================
 
 function getNextRift() {
 
-    const now = getEUTime();
-
-    const currentSeconds =
-        now.hour * 3600 +
-        now.minute * 60 +
-        now.second;
+    const currentSeconds = getCurrentSeconds();
 
 
-    // Najdeme nejbližší Rift
+    // Hledáme nejbližší Rift
 
     for (const hour of RIFT_HOURS) {
 
-        const riftSeconds = hour * 3600;
+        const riftSeconds =
+            hour * 3600;
+
 
         if (riftSeconds > currentSeconds) {
 
             return {
-                remaining: riftSeconds - currentSeconds,
-                hour: hour
-            };
 
+                remaining:
+                    riftSeconds -
+                    currentSeconds,
+
+                hour: hour
+
+            };
         }
     }
 
 
-    // Pokud už poslední Rift dne proběhl,
-    // počítáme do prvního Riftu dalšího dne.
+    // Poslední Rift dne už proběhl.
+    // Další je první Rift následujícího dne.
 
     return {
+
         remaining:
             (24 * 3600) -
             currentSeconds +
             (RIFT_HOURS[0] * 3600),
 
-        hour: RIFT_HOURS[0]
+        hour:
+            RIFT_HOURS[0]
+
     };
 }
 
@@ -79,28 +101,37 @@ function getNextRift() {
 
 function updateTimer() {
 
-    const timer = document.getElementById("timer");
-    const nextTime = document.getElementById("nextTime");
+    const timer =
+        document.getElementById("timer");
+
+    const nextTime =
+        document.getElementById("nextTime");
+
 
     if (!timer) return;
 
 
-    const rift = getNextRift();
+    const rift =
+        getNextRift();
 
 
     const hours =
-        Math.floor(rift.remaining / 3600);
+        Math.floor(
+            rift.remaining / 3600
+        );
+
 
     const minutes =
         Math.floor(
             (rift.remaining % 3600) / 60
         );
 
+
     const seconds =
         rift.remaining % 60;
 
 
-    // Odpočet do dalšího Riftu
+    // Odpočet
 
     timer.textContent =
         `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
@@ -118,6 +149,89 @@ function updateTimer() {
 
 
 // =========================================
+// DNEŠNÍ ROZVRH RIFTŮ
+// =========================================
+
+function updateSchedule() {
+
+    const schedule =
+        document.getElementById("riftSchedule");
+
+
+    if (!schedule) return;
+
+
+    const currentSeconds =
+        getCurrentSeconds();
+
+
+    const nextRift =
+        getNextRift();
+
+
+    schedule.innerHTML = "";
+
+
+    RIFT_HOURS.forEach(hour => {
+
+        const riftSeconds =
+            hour * 3600;
+
+
+        const item =
+            document.createElement("div");
+
+
+        item.className =
+            "rift-time";
+
+
+        item.textContent =
+            `${pad(hour)}:00`;
+
+
+        // =====================================
+        // NEJBLIŽŠÍ RIFT
+        // =====================================
+
+        if (hour === nextRift.hour) {
+
+            item.classList.add("next");
+
+        }
+
+
+        // =====================================
+        // JIŽ PROBĚHLÝ RIFT
+        // =====================================
+
+        else if (
+            riftSeconds <= currentSeconds
+        ) {
+
+            item.classList.add("passed");
+
+        }
+
+
+        // =====================================
+        // BUDOUCÍ RIFT
+        // =====================================
+
+        else {
+
+            item.classList.add("future");
+
+        }
+
+
+        schedule.appendChild(item);
+
+    });
+}
+
+
+// =========================================
 // POP OUT TIMER
 // =========================================
 
@@ -126,10 +240,12 @@ function openPopupTimer() {
     const popupWidth = 430;
     const popupHeight = 280;
 
+
     const left =
         Math.round(
             (screen.width - popupWidth) / 2
         );
+
 
     const top =
         Math.round(
@@ -137,24 +253,32 @@ function openPopupTimer() {
         );
 
 
-    const popup = window.open(
-        "",
-        "AION2_RIFT_TIMER",
-        `width=${popupWidth},height=${popupHeight},left=${left},top=${top},resizable=yes,scrollbars=no`
-    );
+    const popup =
+        window.open(
+            "",
+            "AION2_RIFT_TIMER",
+            `width=${popupWidth},height=${popupHeight},left=${left},top=${top},resizable=yes,scrollbars=no`
+        );
 
+
+    // Popup byl zablokovaný
 
     if (!popup) {
 
         alert(
-            "Popup byl zablokován prohlížečem. Povol vyskakovací okna pro tuto stránku."
+            "Popup byl zablokován prohlížečem.\n\nPovol vyskakovací okna pro tuto stránku."
         );
 
         return;
     }
 
 
+    // =========================================
+    // OBSAH POPUPU
+    // =========================================
+
     popup.document.write(`
+
 <!DOCTYPE html>
 
 <html lang="cs">
@@ -163,20 +287,40 @@ function openPopupTimer() {
 
 <meta charset="UTF-8">
 
-<title>AION 2 - Časovač Riftů</title>
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>
+    AION 2 - Časovač Riftů
+</title>
+
 
 <style>
+
+/* =========================================
+   ZÁKLAD
+   ========================================= */
 
 * {
     box-sizing: border-box;
 }
 
+
 html,
 body {
+
     margin: 0;
+
     width: 100%;
+
     height: 100%;
+
+    overflow: hidden;
+
 }
+
 
 body {
 
@@ -197,9 +341,15 @@ body {
 
 }
 
+
+/* =========================================
+   POPUP
+   ========================================= */
+
 .popup {
 
     width: 100%;
+
     height: 100%;
 
     display: flex;
@@ -212,8 +362,6 @@ body {
 
     text-align: center;
 
-    border: 1px solid rgba(150, 112, 50, 0.65);
-
     background:
         radial-gradient(
             circle at 50% 10%,
@@ -222,9 +370,36 @@ body {
         ),
         #08080d;
 
+    border: 1px solid
+        rgba(150, 112, 50, 0.65);
+
 }
 
+
+/* =========================================
+   NADPIS
+   ========================================= */
+
 .title {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 8px;
+
+    padding: 7px 15px;
+
+    border-radius: 999px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(194, 148, 72, 0.18),
+            rgba(194, 148, 72, 0.08)
+        );
 
     color: #b9a77f;
 
@@ -236,9 +411,33 @@ body {
 
     text-transform: uppercase;
 
-    margin-bottom: 20px;
+    margin-bottom: 22px;
 
 }
+
+
+.title::before {
+
+    content: "";
+
+    width: 8px;
+
+    height: 8px;
+
+    border-radius: 50%;
+
+    background: #dfb45c;
+
+    box-shadow:
+        0 0 10px
+        rgba(223, 180, 92, 0.65);
+
+}
+
+
+/* =========================================
+   ODPOČET
+   ========================================= */
 
 .timer {
 
@@ -257,14 +456,23 @@ body {
 
     letter-spacing: 1px;
 
+    font-variant-numeric:
+        tabular-nums;
+
     text-shadow:
-        0 0 18px rgba(219, 174, 79, 0.25);
+        0 0 18px
+        rgba(219, 174, 79, 0.25);
 
 }
 
+
+/* =========================================
+   DALŠÍ RIFT
+   ========================================= */
+
 .open {
 
-    margin-top: 16px;
+    margin-top: 17px;
 
     color: #7f8495;
 
@@ -272,9 +480,12 @@ body {
 
 }
 
+
 .open strong {
 
     color: #ddd5c4;
+
+    font-weight: 600;
 
 }
 
@@ -282,70 +493,125 @@ body {
 
 </head>
 
+
 <body>
+
 
 <div class="popup">
 
+
     <div class="title">
+
         DALŠÍ ČASOPROSTOROVÝ RIFT
+
     </div>
+
 
     <div
         id="popupTimer"
         class="timer"
     >
+
         --:--:--
+
     </div>
+
 
     <div class="open">
 
-        Otevírá se v
+        OTEVÍRÁ SE V
 
         <strong id="popupNextTime">
+
             --:--
+
         </strong>
 
-        · Evropa
+        · EVROPA
 
     </div>
+
 
 </div>
 
 
 <script>
 
-const RIFT_HOURS = [2, 5, 8, 11, 14, 17, 20, 23];
+
+// =========================================
+// ČASY RIFTŮ
+// =========================================
+
+const RIFT_HOURS =
+    [2, 5, 8, 11, 14, 17, 20, 23];
+
+
+// =========================================
+// FORMÁT
+// =========================================
 
 function pad(number) {
-    return String(number).padStart(2, "0");
+
+    return String(number)
+        .padStart(2, "0");
+
 }
 
-function getNextRift() {
+
+// =========================================
+// AKTUÁLNÍ ČAS
+// =========================================
+
+function getCurrentSeconds() {
 
     const now = new Date();
 
-    const currentSeconds =
+    return (
         now.getHours() * 3600 +
         now.getMinutes() * 60 +
-        now.getSeconds();
+        now.getSeconds()
+    );
 
-    for (const hour of RIFT_HOURS) {
+}
+
+
+// =========================================
+// DALŠÍ RIFT
+// =========================================
+
+function getNextRift() {
+
+    const currentSeconds =
+        getCurrentSeconds();
+
+
+    for (
+        const hour of RIFT_HOURS
+    ) {
 
         const riftSeconds =
             hour * 3600;
 
-        if (riftSeconds > currentSeconds) {
+
+        if (
+            riftSeconds >
+            currentSeconds
+        ) {
 
             return {
+
                 remaining:
                     riftSeconds -
                     currentSeconds,
 
                 hour: hour
+
             };
 
         }
+
     }
+
 
     return {
 
@@ -356,23 +622,33 @@ function getNextRift() {
 
         hour:
             RIFT_HOURS[0]
+
     };
+
 }
+
+
+// =========================================
+// AKTUALIZACE POPUPU
+// =========================================
 
 function updatePopupTimer() {
 
     const rift =
         getNextRift();
 
+
     const hours =
         Math.floor(
             rift.remaining / 3600
         );
 
+
     const minutes =
         Math.floor(
             (rift.remaining % 3600) / 60
         );
+
 
     const seconds =
         rift.remaining % 60;
@@ -381,6 +657,7 @@ function updatePopupTimer() {
     document.getElementById(
         "popupTimer"
     ).textContent =
+
         pad(hours) +
         ":" +
         pad(minutes) +
@@ -391,23 +668,31 @@ function updatePopupTimer() {
     document.getElementById(
         "popupNextTime"
     ).textContent =
+
         pad(rift.hour) +
         ":00";
+
 }
 
+
 updatePopupTimer();
+
 
 setInterval(
     updatePopupTimer,
     1000
 );
 
+
 </script>
+
 
 </body>
 
 </html>
+
     `);
+
 
     popup.document.close();
 
@@ -419,7 +704,9 @@ setInterval(
 // =========================================
 
 const popupButton =
-    document.getElementById("popupButton");
+    document.getElementById(
+        "popupButton"
+    );
 
 
 if (popupButton) {
@@ -433,15 +720,25 @@ if (popupButton) {
 
 
 // =========================================
-// SPUŠTĚNÍ HLAVNÍHO ČASOVAČE
+// SPUŠTĚNÍ
 // =========================================
 
 updateTimer();
 
+updateSchedule();
 
-// Aktualizace každou sekundu
+
+// =========================================
+// AKTUALIZACE KAŽDOU SEKUNDU
+// =========================================
 
 setInterval(
-    updateTimer,
+    () => {
+
+        updateTimer();
+
+        updateSchedule();
+
+    },
     1000
 );
