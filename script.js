@@ -78,8 +78,6 @@ function getNextRift() {
         getCurrentSeconds();
 
 
-    // Hledáme nejbližší Rift dne
-
     for (const hour of RIFT_HOURS) {
 
         const riftSeconds =
@@ -105,10 +103,8 @@ function getNextRift() {
 
 
     // =========================================
-    // POSLEDNÍ RIFT DNE UŽ PROBĚHL
+    // DALŠÍ RIFT JE ZÍTRA VE 02:00
     // =========================================
-
-    // Další Rift je zítra ve 02:00
 
     return {
 
@@ -166,17 +162,9 @@ function updateTimer() {
         rift.remaining % 60;
 
 
-    // =========================================
-    // ODPOČET
-    // =========================================
-
     timer.textContent =
         `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
 
-
-    // =========================================
-    // ČAS DALŠÍHO RIFTU
-    // =========================================
 
     if (nextTime) {
 
@@ -192,16 +180,13 @@ function updateTimer() {
 // DNEŠNÍ ROZVRH RIFTŮ
 // =========================================
 //
-// Časy jsou přímo v index.html.
-//
-// JavaScript pouze nastavuje:
+// HTML obsahuje všech 8 políček.
+// JavaScript pouze mění jejich stav.
 //
 // passed = Rift už proběhl
 // future = Rift teprve bude
 // next   = nejbližší Rift
 //
-// HTML SE NEMAŽE.
-// ELEMENTY SE ZNOVU NEVYTVÁŘÍ.
 // =========================================
 
 function updateSchedule() {
@@ -225,8 +210,6 @@ function updateSchedule() {
         getNextRift();
 
 
-    // Najdeme existující políčka
-
     const items =
         schedule.querySelectorAll(
             ".rift-time"
@@ -244,10 +227,6 @@ function updateSchedule() {
         const riftSeconds =
             hour * 3600;
 
-
-        // =====================================
-        // SMAZÁNÍ STARÉHO STAVU
-        // =====================================
 
         item.classList.remove(
             "passed",
@@ -311,22 +290,45 @@ function updateSchedule() {
 const NOTIFICATION_MINUTES_BEFORE = 5;
 
 
+// Aktuální stav ON / OFF
 let notificationsEnabled = false;
 
 
 // Zabrání opakovanému upozornění
-// během stejného Riftu.
-
 let lastNotifiedRift = null;
 
 
 // =========================================
-// TLAČÍTKO NOTIFIKACE
+// TLAČÍTKO NOTIFIKACE - ON / OFF
 // =========================================
 
-async function enableNotifications() {
+async function toggleNotifications() {
 
-    // Prohlížeč notifikace nepodporuje
+
+    // =========================================
+    // POKUD JSOU ZAPNUTÉ
+    // → VYPNOUT
+    // =========================================
+
+    if (notificationsEnabled) {
+
+        notificationsEnabled = false;
+
+        localStorage.setItem(
+            "aionNotificationsEnabled",
+            "false"
+        );
+
+        updateNotificationButton();
+
+        return;
+
+    }
+
+
+    // =========================================
+    // PROHLÍŽEČ NOTIFIKACE NEPODPORUJE
+    // =========================================
 
     if (
         !("Notification" in window)
@@ -342,7 +344,7 @@ async function enableNotifications() {
 
 
     // =========================================
-    // UŽ POVOLENO
+    // OPRÁVNĚNÍ UŽ JE POVOLENO
     // =========================================
 
     if (
@@ -350,6 +352,11 @@ async function enableNotifications() {
     ) {
 
         notificationsEnabled = true;
+
+        localStorage.setItem(
+            "aionNotificationsEnabled",
+            "true"
+        );
 
         updateNotificationButton();
 
@@ -374,12 +381,22 @@ async function enableNotifications() {
 
             notificationsEnabled = true;
 
+            localStorage.setItem(
+                "aionNotificationsEnabled",
+                "true"
+            );
+
             updateNotificationButton();
 
 
         } else {
 
             notificationsEnabled = false;
+
+            localStorage.setItem(
+                "aionNotificationsEnabled",
+                "false"
+            );
 
             updateNotificationButton();
 
@@ -390,7 +407,6 @@ async function enableNotifications() {
         }
 
     }
-
 
     catch (error) {
 
@@ -455,11 +471,20 @@ function updateNotificationButton() {
 
 function sendRiftNotification(
     riftHour,
-    minutesBefore
+    riftDate
 ) {
 
     if (
         !notificationsEnabled
+    ) {
+
+        return;
+
+    }
+
+
+    if (
+        !("Notification" in window)
     ) {
 
         return;
@@ -476,18 +501,17 @@ function sendRiftNotification(
     }
 
 
-    const now =
-        new Date();
-
-
-    // Identifikace konkrétního Riftu
-    // podle data + hodiny
+    // =========================================
+    // IDENTIFIKACE KONKRÉTNÍHO RIFTU
+    // =========================================
 
     const notificationId =
-        `${now.getFullYear()}-${now.getMonth()}-${now.getDate()}-${riftHour}`;
+        `${riftDate.getFullYear()}-${riftDate.getMonth()}-${riftDate.getDate()}-${riftHour}`;
 
 
-    // Už jsme tento Rift oznámili
+    // =========================================
+    // UŽ JSME TENTO RIFT OZNÁMILI
+    // =========================================
 
     if (
         lastNotifiedRift === notificationId
@@ -503,28 +527,6 @@ function sendRiftNotification(
 
 
     // =========================================
-    // TEXT NOTIFIKACE
-    // =========================================
-
-    let message;
-
-
-    if (
-        minutesBefore === 5
-    ) {
-
-        message =
-            `${pad(riftHour)}:00 – Rift se otevře za 5 minut!`;
-
-    } else {
-
-        message =
-            `${pad(riftHour)}:00 – Rift se právě otevřel!`;
-
-    }
-
-
-    // =========================================
     // NOTIFIKACE
     // =========================================
 
@@ -533,7 +535,7 @@ function sendRiftNotification(
         {
 
             body:
-                message,
+                `${pad(riftHour)}:00 – Rift se otevře za 5 minut!`,
 
             icon:
                 "https://supacek.github.io/EU-TIMER-AION-2/favicon.ico",
@@ -551,68 +553,40 @@ function sendRiftNotification(
 
 
 // =========================================
-// KONTROLA NOTIFIKACE
-// =========================================
-//
-// Upozornění se odešle 5 minut před Riftem.
-//
-// Například:
-//
-// 22:54:59 → nic
-// 22:55:00 → 🔔 Rift za 5 minut
-// 23:00:00 → Rift začíná
-//
+// NAJÍT NEJBLIŽŠÍ RIFT PRO NOTIFIKACI
 // =========================================
 
-function checkForRiftNotification() {
+function getNextRiftDate() {
 
     const now =
-        getEUTime();
+        new Date();
 
 
-    // Kontrolujeme každý Rift
+    // =========================================
+    // HLEDÁME DNEŠNÍ RIFT
+    // =========================================
 
     for (
-        const riftHour of RIFT_HOURS
+        const hour of RIFT_HOURS
     ) {
 
-        // Čas Riftu v sekundách
-
-        const riftSeconds =
-            riftHour * 3600;
+        const candidate =
+            new Date(now);
 
 
-        // Aktuální čas v sekundách
+        candidate.setHours(
+            hour,
+            0,
+            0,
+            0
+        );
 
-        const currentSeconds =
-            now.hour * 3600 +
-            now.minute * 60 +
-            now.second;
-
-
-        // 5 minut před Riftem
-
-        const notificationSeconds =
-            riftSeconds -
-            (
-                NOTIFICATION_MINUTES_BEFORE *
-                60
-            );
-
-
-        // =====================================
-        // Dnešní Rift
-        // =====================================
 
         if (
-            currentSeconds ===
-            notificationSeconds
+            candidate > now
         ) {
 
-            sendRiftNotification(
-                riftHour,
-                NOTIFICATION_MINUTES_BEFORE
-            );
+            return candidate;
 
         }
 
@@ -620,15 +594,101 @@ function checkForRiftNotification() {
 
 
     // =========================================
-    // ZÍTRA 02:00
+    // DNES UŽ ŽÁDNÝ RIFT NENÍ
+    // → ZÍTRA 02:00
     // =========================================
-    //
-    // 01:55 je 5 minut před zítřejším 02:00.
-    //
-    // To už ale normálně zachytí první Rift
-    // dne, protože 02:00 je další Rift.
-    //
+
+    const tomorrow =
+        new Date(now);
+
+
+    tomorrow.setDate(
+        tomorrow.getDate() + 1
+    );
+
+
+    tomorrow.setHours(
+        RIFT_HOURS[0],
+        0,
+        0,
+        0
+    );
+
+
+    return tomorrow;
+
+}
+
+
+// =========================================
+// KONTROLA NOTIFIKACE
+// =========================================
+//
+// Upozornění přijde přesně 5 minut
+// před začátkem Riftu.
+//
+// 22:54:59 → nic
+// 22:55:00 → 🔔 Rift za 5 minut
+// 23:00:00 → Rift začíná
+//
+// Funguje i:
+//
+// 01:55:00 → 🔔 Rift za 5 minut
+// 02:00:00 → Rift začíná
+//
+// =========================================
+
+function checkForRiftNotification() {
+
+
+    if (
+        !notificationsEnabled
+    ) {
+
+        return;
+
+    }
+
+
+    const now =
+        new Date();
+
+
+    const nextRiftDate =
+        getNextRiftDate();
+
+
+    const remainingMilliseconds =
+        nextRiftDate.getTime() -
+        now.getTime();
+
+
+    const remainingSeconds =
+        Math.floor(
+            remainingMilliseconds / 1000
+        );
+
+
+    const notificationSeconds =
+        NOTIFICATION_MINUTES_BEFORE *
+        60;
+
+
     // =========================================
+    // PŘESNĚ 5 MINUT PŘED RIFTEM
+    // =========================================
+
+    if (
+        remainingSeconds ===
+        notificationSeconds
+    ) {
+
+        sendRiftNotification(
+            nextRiftDate.getHours(),
+            nextRiftDate
+        );
+
+    }
 
 }
 
@@ -953,6 +1013,7 @@ function openPopupTimer() {
             const now =
                 new Date();
 
+
             return (
 
                 now.getHours() * 3600 +
@@ -1117,15 +1178,19 @@ if (notifyButton) {
 
     notifyButton.addEventListener(
         "click",
-        enableNotifications
+        toggleNotifications
     );
 
 }
 
 
 // =========================================
-// ZJIŠTĚNÍ, JESTLI JSOU NOTIFIKACE
-// UŽ POVOLENÉ
+// INICIALIZACE NOTIFIKACÍ
+// =========================================
+//
+// Pokud už bylo oprávnění v prohlížeči
+// povoleno, načteme poslední stav ON/OFF.
+//
 // =========================================
 
 function initializeNotifications() {
@@ -1134,16 +1199,74 @@ function initializeNotifications() {
         !("Notification" in window)
     ) {
 
+        updateNotificationButton();
+
         return;
 
     }
 
 
+    const savedState =
+        localStorage.getItem(
+            "aionNotificationsEnabled"
+        );
+
+
+    // =========================================
+    // UŽIVATEL VYPNUL NOTIFIKACE
+    // =========================================
+
     if (
+        savedState === "false"
+    ) {
+
+        notificationsEnabled = false;
+
+    }
+
+
+    // =========================================
+    // UŽIVATEL JE MÁ ZAPNUTÉ
+    // =========================================
+
+    else if (
+        savedState === "true" &&
         Notification.permission === "granted"
     ) {
 
         notificationsEnabled = true;
+
+    }
+
+
+    // =========================================
+    // POPRVÉ
+    // =========================================
+    //
+    // Pokud jsou oprávnění už povolená
+    // a uživatel ještě nemá uložený stav,
+    // necháme notifikace zapnuté.
+    //
+    // =========================================
+
+    else if (
+        savedState === null &&
+        Notification.permission === "granted"
+    ) {
+
+        notificationsEnabled = true;
+
+        localStorage.setItem(
+            "aionNotificationsEnabled",
+            "true"
+        );
+
+    }
+
+
+    else {
+
+        notificationsEnabled = false;
 
     }
 
