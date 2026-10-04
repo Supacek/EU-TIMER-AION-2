@@ -881,3 +881,52 @@ body {
     }
 
 }
+
+/* =========================================
+   AUTOR
+   ========================================= */
+
+.source {
+    text-align: center;
+}
+
+.creator {
+    margin-left: 8px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    white-space: nowrap;
+}
+
+/* každé písmeno vlastní barva */
+
+.creator .c1 {
+    color: #ff4d4d !important;
+}
+
+.creator .c2 {
+    color: #ff9f43 !important;
+}
+
+.creator .c3 {
+    color: #ffd93d !important;
+}
+
+.creator .c4 {
+    color: #6ee56e !important;
+}
+
+.creator .c5 {
+    color: #36d1c4 !important;
+}
+
+.creator .c6 {
+    color: #4da6ff !important;
+}
+
+.creator .c7 {
+    color: #a66cff !important;
+}
+
+.creator .c8 {
+    color: #ff66c4 !important;
+}
