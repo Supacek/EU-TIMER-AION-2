@@ -94,7 +94,8 @@ function getNextRift() {
                     riftSeconds -
                     currentSeconds,
 
-                hour: hour
+                hour:
+                    hour
 
             };
 
@@ -139,7 +140,9 @@ function updateTimer() {
 
 
     if (!timer) {
+
         return;
+
     }
 
 
@@ -199,7 +202,7 @@ function updateTimer() {
 //
 // HTML SE NEMAŽE.
 // ELEMENTY SE ZNOVU NEVYTVÁŘÍ.
-
+// =========================================
 
 function updateSchedule() {
 
@@ -208,7 +211,9 @@ function updateSchedule() {
 
 
     if (!schedule) {
+
         return;
+
     }
 
 
@@ -302,6 +307,10 @@ function updateSchedule() {
 // NOTIFIKACE
 // =========================================
 
+// Kolik minut před Riftem upozornit
+const NOTIFICATION_MINUTES_BEFORE = 5;
+
+
 let notificationsEnabled = false;
 
 
@@ -382,6 +391,7 @@ async function enableNotifications() {
 
     }
 
+
     catch (error) {
 
         console.error(
@@ -407,7 +417,9 @@ function updateNotificationButton() {
 
 
     if (!button) {
+
         return;
+
     }
 
 
@@ -421,6 +433,7 @@ function updateNotificationButton() {
         button.classList.add(
             "enabled"
         );
+
 
     } else {
 
@@ -441,29 +454,34 @@ function updateNotificationButton() {
 // =========================================
 
 function sendRiftNotification(
-    riftHour
+    riftHour,
+    minutesBefore
 ) {
 
     if (
         !notificationsEnabled
     ) {
+
         return;
+
     }
 
 
     if (
         Notification.permission !== "granted"
     ) {
+
         return;
+
     }
 
-
-    // Identifikace Riftu
-    // podle dne + hodiny
 
     const now =
         new Date();
 
+
+    // Identifikace konkrétního Riftu
+    // podle data + hodiny
 
     const notificationId =
         `${now.getFullYear()}-${now.getMonth()}-${now.getDate()}-${riftHour}`;
@@ -485,6 +503,28 @@ function sendRiftNotification(
 
 
     // =========================================
+    // TEXT NOTIFIKACE
+    // =========================================
+
+    let message;
+
+
+    if (
+        minutesBefore === 5
+    ) {
+
+        message =
+            `${pad(riftHour)}:00 – Rift se otevře za 5 minut!`;
+
+    } else {
+
+        message =
+            `${pad(riftHour)}:00 – Rift se právě otevřel!`;
+
+    }
+
+
+    // =========================================
     // NOTIFIKACE
     // =========================================
 
@@ -493,7 +533,7 @@ function sendRiftNotification(
         {
 
             body:
-                `${pad(riftHour)}:00 – Rift je právě otevřen!`,
+                message,
 
             icon:
                 "https://supacek.github.io/EU-TIMER-AION-2/favicon.ico",
@@ -511,43 +551,84 @@ function sendRiftNotification(
 
 
 // =========================================
-// KONTROLA, ZDA PRÁVĚ ZAČAL RIFT
+// KONTROLA NOTIFIKACE
+// =========================================
+//
+// Upozornění se odešle 5 minut před Riftem.
+//
+// Například:
+//
+// 22:54:59 → nic
+// 22:55:00 → 🔔 Rift za 5 minut
+// 23:00:00 → Rift začíná
+//
 // =========================================
 
-function checkForRiftStart() {
+function checkForRiftNotification() {
 
     const now =
         getEUTime();
 
 
-    // Rift začíná přesně v celou
+    // Kontrolujeme každý Rift
 
-    if (
-        now.minute !== 0 ||
-        now.second !== 0
+    for (
+        const riftHour of RIFT_HOURS
     ) {
 
-        return;
+        // Čas Riftu v sekundách
+
+        const riftSeconds =
+            riftHour * 3600;
+
+
+        // Aktuální čas v sekundách
+
+        const currentSeconds =
+            now.hour * 3600 +
+            now.minute * 60 +
+            now.second;
+
+
+        // 5 minut před Riftem
+
+        const notificationSeconds =
+            riftSeconds -
+            (
+                NOTIFICATION_MINUTES_BEFORE *
+                60
+            );
+
+
+        // =====================================
+        // Dnešní Rift
+        // =====================================
+
+        if (
+            currentSeconds ===
+            notificationSeconds
+        ) {
+
+            sendRiftNotification(
+                riftHour,
+                NOTIFICATION_MINUTES_BEFORE
+            );
+
+        }
 
     }
 
 
-    // Je tento čas Rift?
-
-    if (
-        !RIFT_HOURS.includes(
-            now.hour
-        )
-    ) {
-
-        return;
-
-    }
-
-
-    sendRiftNotification(
-        now.hour
-    );
+    // =========================================
+    // ZÍTRA 02:00
+    // =========================================
+    //
+    // 01:55 je 5 minut před zítřejším 02:00.
+    //
+    // To už ale normálně zachytí první Rift
+    // dne, protože 02:00 je další Rift.
+    //
+    // =========================================
 
 }
 
@@ -808,6 +889,7 @@ function openPopupTimer() {
 
 <body>
 
+
     <div class="popup">
 
 
@@ -922,6 +1004,7 @@ function openPopupTimer() {
             return {
 
                 remaining:
+
                     (24 * 3600) -
                     currentSeconds +
                     (RIFT_HOURS[0] * 3600),
@@ -986,6 +1069,7 @@ function openPopupTimer() {
         );
 
     <\/script>
+
 
 </body>
 
@@ -1091,7 +1175,7 @@ setInterval(
 
         updateSchedule();
 
-        checkForRiftStart();
+        checkForRiftNotification();
 
     },
     1000
