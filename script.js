@@ -106,6 +106,7 @@ function getNextRift() {
     // =========================================
     // POSLEDNÍ RIFT DNE UŽ PROBĚHL
     // =========================================
+
     // Další Rift je zítra ve 02:00
 
     return {
@@ -187,14 +188,17 @@ function updateTimer() {
 // =========================================
 // DNEŠNÍ ROZVRH RIFTŮ
 // =========================================
-// Časy už jsou přímo v index.html.
-// JavaScript pouze nastavuje:
-// - passed = proběhl
-// - future = budoucí
-// - next = nejbližší Rift
 //
-// NEMAŽEME HTML A NEVYTVÁŘÍME
-// NOVÉ ELEMENTY.
+// Časy jsou přímo v index.html.
+//
+// JavaScript pouze nastavuje:
+//
+// passed = Rift už proběhl
+// future = Rift teprve bude
+// next   = nejbližší Rift
+//
+// HTML SE NEMAŽE.
+// ELEMENTY SE ZNOVU NEVYTVÁŘÍ.
 
 
 function updateSchedule() {
@@ -216,9 +220,12 @@ function updateSchedule() {
         getNextRift();
 
 
-    // Najdeme již existující políčka
+    // Najdeme existující políčka
+
     const items =
-        schedule.querySelectorAll(".rift-time");
+        schedule.querySelectorAll(
+            ".rift-time"
+        );
 
 
     items.forEach(item => {
@@ -234,7 +241,7 @@ function updateSchedule() {
 
 
         // =====================================
-        // NEJDŘÍVE SMAZAT STARÉ STAVY
+        // SMAZÁNÍ STARÉHO STAVU
         // =====================================
 
         item.classList.remove(
@@ -252,7 +259,9 @@ function updateSchedule() {
             hour === nextRift.hour
         ) {
 
-            item.classList.add("next");
+            item.classList.add(
+                "next"
+            );
 
             return;
 
@@ -267,7 +276,9 @@ function updateSchedule() {
             riftSeconds <= currentSeconds
         ) {
 
-            item.classList.add("passed");
+            item.classList.add(
+                "passed"
+            );
 
             return;
 
@@ -278,9 +289,265 @@ function updateSchedule() {
         // BUDOUCÍ RIFT
         // =====================================
 
-        item.classList.add("future");
+        item.classList.add(
+            "future"
+        );
 
     });
+
+}
+
+
+// =========================================
+// NOTIFIKACE
+// =========================================
+
+let notificationsEnabled = false;
+
+
+// Zabrání opakovanému upozornění
+// během stejného Riftu.
+
+let lastNotifiedRift = null;
+
+
+// =========================================
+// TLAČÍTKO NOTIFIKACE
+// =========================================
+
+async function enableNotifications() {
+
+    // Prohlížeč notifikace nepodporuje
+
+    if (
+        !("Notification" in window)
+    ) {
+
+        alert(
+            "Tento prohlížeč nepodporuje systémové notifikace."
+        );
+
+        return;
+
+    }
+
+
+    // =========================================
+    // UŽ POVOLENO
+    // =========================================
+
+    if (
+        Notification.permission === "granted"
+    ) {
+
+        notificationsEnabled = true;
+
+        updateNotificationButton();
+
+        return;
+
+    }
+
+
+    // =========================================
+    // POŽÁDAT O POVOLENÍ
+    // =========================================
+
+    try {
+
+        const permission =
+            await Notification.requestPermission();
+
+
+        if (
+            permission === "granted"
+        ) {
+
+            notificationsEnabled = true;
+
+            updateNotificationButton();
+
+
+        } else {
+
+            notificationsEnabled = false;
+
+            updateNotificationButton();
+
+            alert(
+                "Notifikace nebyly povoleny.\n\nPovol je v nastavení oprávnění pro tuto stránku."
+            );
+
+        }
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Chyba při žádosti o notifikaci:",
+            error
+        );
+
+    }
+
+}
+
+
+// =========================================
+// VZHLED TLAČÍTKA NOTIFIKACE
+// =========================================
+
+function updateNotificationButton() {
+
+    const button =
+        document.getElementById(
+            "notifyButton"
+        );
+
+
+    if (!button) {
+        return;
+    }
+
+
+    if (
+        notificationsEnabled
+    ) {
+
+        button.textContent =
+            "🔔 NOTIFIKACE ZAPNUTA";
+
+        button.classList.add(
+            "enabled"
+        );
+
+    } else {
+
+        button.textContent =
+            "🔔 UPOZORNIT MĚ";
+
+        button.classList.remove(
+            "enabled"
+        );
+
+    }
+
+}
+
+
+// =========================================
+// POSLAT NOTIFIKACI
+// =========================================
+
+function sendRiftNotification(
+    riftHour
+) {
+
+    if (
+        !notificationsEnabled
+    ) {
+        return;
+    }
+
+
+    if (
+        Notification.permission !== "granted"
+    ) {
+        return;
+    }
+
+
+    // Identifikace Riftu
+    // podle dne + hodiny
+
+    const now =
+        new Date();
+
+
+    const notificationId =
+        `${now.getFullYear()}-${now.getMonth()}-${now.getDate()}-${riftHour}`;
+
+
+    // Už jsme tento Rift oznámili
+
+    if (
+        lastNotifiedRift === notificationId
+    ) {
+
+        return;
+
+    }
+
+
+    lastNotifiedRift =
+        notificationId;
+
+
+    // =========================================
+    // NOTIFIKACE
+    // =========================================
+
+    new Notification(
+        "AION 2 – Časoprostorový Rift",
+        {
+
+            body:
+                `${pad(riftHour)}:00 – Rift je právě otevřen!`,
+
+            icon:
+                "https://supacek.github.io/EU-TIMER-AION-2/favicon.ico",
+
+            tag:
+                "aion2-rift",
+
+            renotify:
+                true
+
+        }
+    );
+
+}
+
+
+// =========================================
+// KONTROLA, ZDA PRÁVĚ ZAČAL RIFT
+// =========================================
+
+function checkForRiftStart() {
+
+    const now =
+        getEUTime();
+
+
+    // Rift začíná přesně v celou
+
+    if (
+        now.minute !== 0 ||
+        now.second !== 0
+    ) {
+
+        return;
+
+    }
+
+
+    // Je tento čas Rift?
+
+    if (
+        !RIFT_HOURS.includes(
+            now.hour
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    sendRiftNotification(
+        now.hour
+    );
 
 }
 
@@ -357,10 +624,6 @@ function openPopupTimer() {
 
     <style>
 
-        /* =========================================
-           ZÁKLAD
-           ========================================= */
-
         * {
             box-sizing: border-box;
         }
@@ -400,10 +663,6 @@ function openPopupTimer() {
         }
 
 
-        /* =========================================
-           POPUP
-           ========================================= */
-
         .popup {
 
             width: 100%;
@@ -430,15 +689,12 @@ function openPopupTimer() {
 
                 #08080d;
 
-            border: 1px solid
+            border:
+                1px solid
                 rgba(150, 112, 50, 0.65);
 
         }
 
-
-        /* =========================================
-           NADPIS
-           ========================================= */
 
         .title {
 
@@ -450,7 +706,8 @@ function openPopupTimer() {
 
             gap: 8px;
 
-            padding: 7px 15px;
+            padding:
+                7px 15px;
 
             border-radius: 999px;
 
@@ -498,10 +755,6 @@ function openPopupTimer() {
         }
 
 
-        /* =========================================
-           ODPOČET
-           ========================================= */
-
         .timer {
 
             color: #f2d37f;
@@ -528,10 +781,6 @@ function openPopupTimer() {
 
         }
 
-
-        /* =========================================
-           DALŠÍ RIFT
-           ========================================= */
 
         .open {
 
@@ -597,10 +846,6 @@ function openPopupTimer() {
 
     <script>
 
-        // =========================================
-        // ČASY RIFTŮ
-        // =========================================
-
         const RIFT_HOURS = [
             2,
             5,
@@ -613,10 +858,6 @@ function openPopupTimer() {
         ];
 
 
-        // =========================================
-        // FORMÁT
-        // =========================================
-
         function pad(number) {
 
             return String(number)
@@ -625,27 +866,23 @@ function openPopupTimer() {
         }
 
 
-        // =========================================
-        // AKTUÁLNÍ ČAS
-        // =========================================
-
         function getCurrentSeconds() {
 
             const now =
                 new Date();
 
             return (
+
                 now.getHours() * 3600 +
+
                 now.getMinutes() * 60 +
+
                 now.getSeconds()
+
             );
 
         }
 
-
-        // =========================================
-        // DALŠÍ RIFT
-        // =========================================
 
         function getNextRift() {
 
@@ -682,8 +919,6 @@ function openPopupTimer() {
             }
 
 
-            // Zítra 02:00
-
             return {
 
                 remaining:
@@ -698,10 +933,6 @@ function openPopupTimer() {
 
         }
 
-
-        // =========================================
-        // AKTUALIZACE POPUPU
-        // =========================================
 
         function updatePopupTimer() {
 
@@ -756,7 +987,6 @@ function openPopupTimer() {
 
     <\/script>
 
-
 </body>
 
 </html>
@@ -790,12 +1020,64 @@ if (popupButton) {
 
 
 // =========================================
+// TLAČÍTKO NOTIFIKACE
+// =========================================
+
+const notifyButton =
+    document.getElementById(
+        "notifyButton"
+    );
+
+
+if (notifyButton) {
+
+    notifyButton.addEventListener(
+        "click",
+        enableNotifications
+    );
+
+}
+
+
+// =========================================
+// ZJIŠTĚNÍ, JESTLI JSOU NOTIFIKACE
+// UŽ POVOLENÉ
+// =========================================
+
+function initializeNotifications() {
+
+    if (
+        !("Notification" in window)
+    ) {
+
+        return;
+
+    }
+
+
+    if (
+        Notification.permission === "granted"
+    ) {
+
+        notificationsEnabled = true;
+
+    }
+
+
+    updateNotificationButton();
+
+}
+
+
+// =========================================
 // PRVNÍ SPUŠTĚNÍ
 // =========================================
 
 updateTimer();
 
 updateSchedule();
+
+initializeNotifications();
 
 
 // =========================================
@@ -808,6 +1090,8 @@ setInterval(
         updateTimer();
 
         updateSchedule();
+
+        checkForRiftStart();
 
     },
     1000
