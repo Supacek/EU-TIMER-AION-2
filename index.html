@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="cs">
 
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -9,10 +10,11 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>AION 2 EU Timer</title>
+    <title>AION 2 EU - Časovač Riftů</title>
 
     <!-- CSS -->
     <link rel="stylesheet" href="style.css">
+
 </head>
 
 
@@ -22,13 +24,16 @@
 
         <main class="card">
 
-            <!-- TITLE -->
+
+            <!-- NADPIS -->
+
             <div class="eyebrow">
-                NEXT SPACETIME RIFT
+                DALŠÍ ČASOPROSTOROVÝ RIFT
             </div>
 
 
-            <!-- TIMER -->
+            <!-- ODPOČET -->
+
             <div
                 id="timer"
                 class="timer"
@@ -37,21 +42,41 @@
             </div>
 
 
-            <!-- NEXT RIFT TIME -->
+            <!-- ČAS DALŠÍHO RIFTU -->
+
             <div class="open">
-                OTEVIRA SE 
+
+                OTEVÍRÁ SE V
+
                 <strong id="nextTime">
                     --:--
                 </strong>
-                · Europe
+
+                · EVROPA
+
             </div>
 
 
-            <!-- FOOTER -->
+            <!-- ZDROJ -->
+
             <div class="source">
-                AION 2 EU server schedule
-                <b>(GMT+9)</b>
+
+                AION 2 EU
+                <b>· ČASOVÝ ROZVRH RIFTŮ</b>
+
             </div>
+
+
+            <!-- POP OUT TIMER -->
+
+            <button
+                id="popupButton"
+                class="popup-button"
+                type="button"
+            >
+                ⧉ POP OUT TIMER
+            </button>
+
 
         </main>
 
@@ -59,6 +84,7 @@
 
 
     <!-- JavaScript -->
+
     <script src="script.js"></script>
 
 </body>
