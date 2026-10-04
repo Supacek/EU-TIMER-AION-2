@@ -1,0 +1,219 @@
+/* =========================================
+   AION 2 EU TIMER
+   ========================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    background: #08080d;
+    color: #d8d5cf;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+
+/* =========================================
+   MAIN
+   ========================================= */
+
+#app {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background:
+        radial-gradient(
+            circle at 50% 15%,
+            rgba(180, 135, 55, 0.08),
+            transparent 45%
+        ),
+        #08080d;
+}
+
+
+/* =========================================
+   TIMER CARD
+   ========================================= */
+
+.card {
+    width: 100%;
+    max-width: 430px;
+
+    min-height: 245px;
+
+    padding: 28px 26px 23px;
+
+    text-align: center;
+
+    background: rgba(10, 10, 16, 0.96);
+
+    border: 1px solid rgba(150, 112, 50, 0.55);
+
+    border-radius: 9px;
+
+    box-shadow:
+        0 16px 50px rgba(0, 0, 0, 0.45),
+        inset 0 1px 0 rgba(255, 255, 255, 0.02);
+}
+
+
+/* =========================================
+   TITLE
+   ========================================= */
+
+.eyebrow {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 9px;
+
+    padding: 7px 15px;
+
+    border-radius: 999px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(194, 148, 72, 0.18),
+            rgba(194, 148, 72, 0.08)
+        );
+
+    color: #b9a77f;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    letter-spacing: 2px;
+
+    text-transform: uppercase;
+}
+
+
+/* Zlatá tečka před názvem */
+
+.eyebrow::before {
+    content: "";
+
+    width: 8px;
+    height: 8px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background: #dfb45c;
+
+    box-shadow:
+        0 0 10px rgba(223, 180, 92, 0.65);
+}
+
+
+/* =========================================
+   TIMER
+   ========================================= */
+
+.timer {
+    margin-top: 24px;
+    margin-bottom: 8px;
+
+    color: #f2d37f;
+
+    font-family: Georgia, "Times New Roman", serif;
+
+    font-size: clamp(48px, 11vw, 72px);
+
+    font-weight: 700;
+
+    line-height: 1;
+
+    letter-spacing: 1px;
+
+    text-shadow:
+        0 0 18px rgba(219, 174, 79, 0.20);
+}
+
+
+/* =========================================
+   NEXT RIFT
+   ========================================= */
+
+.open {
+    color: #7f8495;
+
+    font-size: 14px;
+
+    font-weight: 500;
+}
+
+.open strong {
+    color: #ddd5c4;
+
+    font-weight: 600;
+}
+
+
+/* =========================================
+   FOOTER
+   ========================================= */
+
+.source {
+    margin-top: 14px;
+
+    color: #696d7b;
+
+    font-size: 12px;
+}
+
+.source b {
+    color: #a39b89;
+
+    font-weight: 500;
+}
+
+
+/* =========================================
+   SMALL WINDOW
+   ========================================= */
+
+@media (max-width: 430px) {
+
+    #app {
+        align-items: stretch;
+    }
+
+    .card {
+        max-width: none;
+
+        min-height: 100%;
+
+        border: 0;
+
+        border-radius: 0;
+
+        display: flex;
+
+        flex-direction: column;
+
+        justify-content: center;
+
+        padding: 24px 18px;
+    }
+
+    .timer {
+        font-size: 64px;
+    }
+}
