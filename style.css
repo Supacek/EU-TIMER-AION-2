@@ -1,5 +1,5 @@
 /* =========================================
-   AION 2 EU TIMER
+   AION 2 EU - ČASOVAČ RIFTŮ
    ========================================= */
 
 * {
@@ -22,7 +22,7 @@ body {
 
 
 /* =========================================
-   MAIN
+   HLAVNÍ OBRAZOVKA
    ========================================= */
 
 #app {
@@ -44,20 +44,24 @@ body {
 
 
 /* =========================================
-   TIMER CARD
+   HLAVNÍ KARTA
    ========================================= */
 
 .card {
     width: 100%;
     max-width: 430px;
+    min-height: 300px;
 
-    min-height: 245px;
+    padding: 28px 26px 24px;
 
-    padding: 28px 26px 23px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 
     text-align: center;
 
-    background: rgba(10, 10, 16, 0.96);
+    background: rgba(10, 10, 16, 0.97);
 
     border: 1px solid rgba(150, 112, 50, 0.55);
 
@@ -70,7 +74,7 @@ body {
 
 
 /* =========================================
-   TITLE
+   NADPIS
    ========================================= */
 
 .eyebrow {
@@ -103,7 +107,7 @@ body {
 }
 
 
-/* Zlatá tečka před názvem */
+/* Zlatá tečka */
 
 .eyebrow::before {
     content: "";
@@ -123,16 +127,19 @@ body {
 
 
 /* =========================================
-   TIMER
+   ODPOČET
    ========================================= */
 
 .timer {
     margin-top: 24px;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
 
     color: #f2d37f;
 
-    font-family: Georgia, "Times New Roman", serif;
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
 
     font-size: clamp(48px, 11vw, 72px);
 
@@ -142,13 +149,15 @@ body {
 
     letter-spacing: 1px;
 
+    font-variant-numeric: tabular-nums;
+
     text-shadow:
         0 0 18px rgba(219, 174, 79, 0.20);
 }
 
 
 /* =========================================
-   NEXT RIFT
+   DALŠÍ RIFT
    ========================================= */
 
 .open {
@@ -167,7 +176,7 @@ body {
 
 
 /* =========================================
-   FOOTER
+   ZDROJ
    ========================================= */
 
 .source {
@@ -186,7 +195,88 @@ body {
 
 
 /* =========================================
-   SMALL WINDOW
+   POP OUT TIMER - TLAČÍTKO
+   ========================================= */
+
+.popup-button {
+    margin-top: 20px;
+
+    padding: 9px 18px;
+
+    border: 1px solid rgba(194, 148, 72, 0.60);
+
+    border-radius: 999px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(194, 148, 72, 0.15),
+            rgba(194, 148, 72, 0.07)
+        );
+
+    color: #d8c28a;
+
+    font-family: Arial, Helvetica, sans-serif;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    letter-spacing: 1px;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.15s ease;
+}
+
+
+/* Hover */
+
+.popup-button:hover {
+    background:
+        linear-gradient(
+            180deg,
+            rgba(194, 148, 72, 0.25),
+            rgba(194, 148, 72, 0.12)
+        );
+
+    border-color: #d8b45c;
+
+    color: #f2d37f;
+
+    transform: translateY(-1px);
+}
+
+
+/* Kliknutí */
+
+.popup-button:active {
+    transform: translateY(0);
+}
+
+
+/* =========================================
+   POPUP / MALÉ OKNO
+   ========================================= */
+
+.popup-window {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background: #08080d;
+}
+
+
+/* =========================================
+   MALÁ OBRAZOVKA
    ========================================= */
 
 @media (max-width: 430px) {
@@ -204,16 +294,38 @@ body {
 
         border-radius: 0;
 
-        display: flex;
-
-        flex-direction: column;
-
-        justify-content: center;
-
         padding: 24px 18px;
     }
 
     .timer {
         font-size: 64px;
+    }
+
+    .popup-button {
+        margin-top: 18px;
+    }
+}
+
+
+/* =========================================
+   VELMI MALÁ ZAŘÍZENÍ
+   ========================================= */
+
+@media (max-height: 500px) {
+
+    .card {
+        min-height: auto;
+
+        padding: 20px;
+    }
+
+    .timer {
+        margin-top: 18px;
+
+        font-size: 52px;
+    }
+
+    .popup-button {
+        margin-top: 14px;
     }
 }
