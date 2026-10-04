@@ -703,16 +703,30 @@ body {
 
 
 /* =========================================
-   ZDROJ
+   ZDROJ / AUTOR
    ========================================= */
 
 .source {
 
+    width: 100%;
+
     margin-top: 15px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-wrap: wrap;
 
     color: #696d7b;
 
     font-size: 11px;
+
+    line-height: 1.5;
+
+    text-align: center;
 
 }
 
@@ -723,6 +737,60 @@ body {
 
     font-weight: 500;
 
+}
+
+
+.creator {
+
+    margin-left: 8px;
+
+    font-weight: 800;
+
+    letter-spacing: 1px;
+
+    white-space: nowrap;
+
+    text-shadow:
+        0 0 7px
+        rgba(255, 255, 255, 0.10);
+
+}
+
+
+/* =========================================
+   KAŽDÉ PÍSMENO SUPACEEK JINOU BARVOU
+   ========================================= */
+
+.creator .c1 {
+    color: #ff4d4d !important;
+}
+
+.creator .c2 {
+    color: #ff9f43 !important;
+}
+
+.creator .c3 {
+    color: #ffd93d !important;
+}
+
+.creator .c4 {
+    color: #6ee56e !important;
+}
+
+.creator .c5 {
+    color: #36d1c4 !important;
+}
+
+.creator .c6 {
+    color: #4da6ff !important;
+}
+
+.creator .c7 {
+    color: #a66cff !important;
+}
+
+.creator .c8 {
+    color: #ff66c4 !important;
 }
 
 
@@ -880,53 +948,4 @@ body {
 
     }
 
-}
-
-/* =========================================
-   AUTOR
-   ========================================= */
-
-.source {
-    text-align: center;
-}
-
-.creator {
-    margin-left: 8px;
-    font-weight: 800;
-    letter-spacing: 1px;
-    white-space: nowrap;
-}
-
-/* každé písmeno vlastní barva */
-
-.creator .c1 {
-    color: #ff4d4d !important;
-}
-
-.creator .c2 {
-    color: #ff9f43 !important;
-}
-
-.creator .c3 {
-    color: #ffd93d !important;
-}
-
-.creator .c4 {
-    color: #6ee56e !important;
-}
-
-.creator .c5 {
-    color: #36d1c4 !important;
-}
-
-.creator .c6 {
-    color: #4da6ff !important;
-}
-
-.creator .c7 {
-    color: #a66cff !important;
-}
-
-.creator .c8 {
-    color: #ff66c4 !important;
 }
